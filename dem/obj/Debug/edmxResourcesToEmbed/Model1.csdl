@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BazaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Calls">
+    <Key>
+      <PropertyRef Name="ID_Call" />
+    </Key>
+    <Property Name="ID_Call" Type="Int32" Nullable="false" />
+    <Property Name="NumCall" Type="Int32" />
+    <Property Name="zDataTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Duration" Type="Int32" />
+    <Property Name="InOut" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="User_ID" Type="Int32" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_Calls_Users" FromRole="Calls" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="ID_User" />
+    </Key>
+    <Property Name="ID_User" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="NumPhone" Type="Int32" />
+    <Property Name="Provider" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Calls" Relationship="Self.FK_Calls_Users" FromRole="Users" ToRole="Calls" />
+  </EntityType>
+  <Association Name="FK_Calls_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+    <End Role="Calls" Type="Self.Calls" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="ID_User" />
+      </Principal>
+      <Dependent Role="Calls">
+        <PropertyRef Name="User_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="BazaEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Calls" EntityType="Self.Calls" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="Users" EntityType="Self.Users" />
+    <AssociationSet Name="FK_Calls_Users" Association="Self.FK_Calls_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Calls" EntitySet="Calls" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
